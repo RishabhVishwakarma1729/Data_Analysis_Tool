@@ -7,7 +7,7 @@ import seaborn as sns
 
 # Reusable Functions
 
-# Read file
+# Reading files
 def read_file(file_path, file_type):
     try:
         if file_type == 'csv':
@@ -22,14 +22,14 @@ def read_file(file_path, file_type):
         st.error(f"Error reading file: {e}")
         return None
 
-# Clean data
+# Cleaning data
 def clean_data(df):
     df_cleaned = df.drop_duplicates()
     df_cleaned = df_cleaned.fillna(df_cleaned.mean(numeric_only=True))
     df_cleaned = df_cleaned.dropna()
     return df_cleaned
 
-# Describe data
+# Describing data
 def describe_data(df):
     st.write("Data Information:")
     buffer = pd.io.common.StringIO()
@@ -39,7 +39,7 @@ def describe_data(df):
     st.write("Statistical Summary:")
     st.write(df.describe())
 
-# Rename columns
+# Renaming columns
 def rename_columns(df, new_columns):
     try:
         df = df.rename(columns=new_columns)
@@ -48,7 +48,7 @@ def rename_columns(df, new_columns):
         st.error(f"Error renaming columns: {e}")
         return df 
 
-# Change data types
+# Changing data types
 def change_data_types(df, column_types): 
     try:
         df = df.astype(column_types)
@@ -57,7 +57,7 @@ def change_data_types(df, column_types):
         st.error(f"Error changing data types: {e}")
         return df
 
-# Handle missing values
+# Handling missing values
 def handle_missing_values(df, strategy='mean'):
     if strategy == 'mean':
         return df.fillna(df.mean())
@@ -71,7 +71,7 @@ def handle_missing_values(df, strategy='mean'):
         st.error("Invalid strategy. Choose from 'mean', 'median', 'mode', or 'drop'.")
         return df
 
-# Handle outliers
+# Handling outliers
 def handle_outliers(df, column, method='iqr'):
     if method == 'iqr':
         Q1 = df[column].quantile(0.25)
@@ -84,11 +84,11 @@ def handle_outliers(df, column, method='iqr'):
         st.error("Invalid method. Choose 'iqr' or 'zscore'.")
     return df
 
-# Subset DataFrame
+# Subsetting DataFrame
 def sub_setting(df, condition):
     return df.query(condition)
 
-# Sample data
+# Sampling data
 def sample_data(df, n, method='random'):
     if method == 'random':
         return df.sample(n=n, random_state=42)
@@ -98,7 +98,7 @@ def sample_data(df, n, method='random'):
         st.error("Invalid method. Choose 'random' or 'stratified'.")
         return df
 
-# Create new column
+# Creating new column
 def create_new_column(df, new_column_name, calculation):
     df[new_column_name] = calculation
     return df
@@ -112,7 +112,7 @@ def bin_data(df, column, bins, labels):
         st.error(f"Error binning data: {e}")
         return df
 
-# Replace values
+# Replacing values
 def replace_values(df, column_name, to_replace, value):
     df[column_name] = df[column_name].replace(to_replace, value)
     return df
@@ -147,17 +147,17 @@ if uploaded_file is not None:
         st.write("Data Preview:")
         st.dataframe(df.head())
 
-        # Step 3: Clean Data
+        # Step 3: Cleaning Data
         if st.button("Clean Data"):
             df = clean_data(df)
             st.write("Cleaned Data:")
             st.dataframe(df.head())
 
-        # Step 4: Describe Data
+        # Step 4: Describing Data
         if st.button("Describe Data"):
             describe_data(df)
 
-        # Step 5: Rename Columns
+        # Step 5: Renaming Columns
         new_column_names = st.text_input("Enter new column names as a dictionary (e.g., {'old_name': 'new_name'})")
         if st.button("Rename Columns"):
             try:
@@ -167,7 +167,7 @@ if uploaded_file is not None:
             except Exception as e:
                 st.error(f"Error renaming columns: {e}")
 
-        # Step 6: Change Data Types
+        # Step 6: Changing Data Types
         column_types_input = st.text_input("Enter column types as a dictionary (e.g., {'column_name': 'type'})")
         if st.button("Change Data Types"):
             try:
@@ -177,27 +177,27 @@ if uploaded_file is not None:
             except Exception as e:
                 st.error(f"Error changing data types: {e}")
 
-        # Step 7: Handle Missing Values
+        # Step 7: Handling Missing Values
         missing_value_strategy = st.selectbox("Select strategy for handling missing values", ['mean', 'median', 'mode', 'drop'])
         if st.button("Handle Missing Values"):
             df = handle_missing_values(df, strategy=missing_value_strategy)
             st.write("Missing values handled.")
 
-        # Step 8: Handle Outliers
+        # Step 8: Handling Outliers
         column_for_outliers = st.selectbox("Select a column to handle outliers", df.columns)
         outlier_method = st.selectbox("Select method for handling outliers", ['iqr', 'zscore'])
         if st.button("Handle Outliers"):
             df = handle_outliers(df, column_for_outliers, method=outlier_method)
             st.write("Outliers handled.")
 
-        # Step 9: Subset Data
+        # Step 9: Subsetting Data
         condition = st.text_input("Enter condition for subsetting (e.g., 'column_name > value')")
         if st.button("Subset Data"):
             df_subset = sub_setting(df, condition)
             st.write("Subsetted Data:")
             st.dataframe(df_subset)
 
-        # Step 10: Sample Data
+        # Step 10: Sampling Data
         sample_size = st.number_input("Enter the sample size", min_value=1)
         sample_method = st.selectbox("Select sampling method", ['random', 'stratified'])
         if st.button("Sample Data"):
@@ -205,14 +205,14 @@ if uploaded_file is not None:
             st.write("Sampled Data:")
             st.dataframe(df_sampled)
 
-        # Step 11: Create New Column
+        # Step 11: Creating New Column
         new_column_name = st.text_input("Enter new column name")
         calculation = st.text_input("Enter calculation (e.g., df['column1'] + df['column2'])")
         if st.button("Create New Column"):
             df = create_new_column(df, new_column_name, eval(calculation))
             st.write("New column created successfully.")
 
-        # Step 12: Transform Data
+        # Step 12: Transforming Data
         column_to_bin = st.selectbox("Select a column to bin", df.columns)
         bins_input = st.text_input("Enter bin edges as a list (e.g., [0, 10, 20])")
         labels_input = st.text_input("Enter labels for the bins as a list (e.g., ['Low', 'Medium', 'High'])")
@@ -225,7 +225,7 @@ if uploaded_file is not None:
             except Exception as e:
                 st.error(f"Error binning data: {e}")
 
-        # Step 13: Replace Values
+        # Step 13: Replacing Values
         column_to_replace = st.selectbox("Select a column to replace values", df.columns)
         to_replace_value = st.text_input("Enter value to replace")
         new_value = st.text_input("Enter new value")
