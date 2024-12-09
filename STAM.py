@@ -134,7 +134,7 @@ def plot_scatter_plot(df, x_column, y_column):
     st.pyplot(plt)
 
 # Streamlit App
-st.title("Advanced Data Analysis App")
+st.title("Data Analysis and Visualisation Application")
 
 # File upload widget
 uploaded_file = st.file_uploader("Upload your Excel or CSV file", type=['csv', 'xlsx'])
